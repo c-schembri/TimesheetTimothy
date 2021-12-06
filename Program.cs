@@ -109,7 +109,7 @@ public static class Program
                 break;
             
             case ExitCode.InvalidArgumentCount:
-                Console.Write("Timothy requires two arguments, command and target user (e.g., 'commit' and 'user@email.com')");
+                Console.Write("Timothy requires two arguments, command and target user (e.g., 'commit' and 'user@email.com').");
                 break;
             
             case ExitCode.InvalidArgumentSpecified:
