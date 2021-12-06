@@ -88,7 +88,7 @@ public static class Program
         
 #if RELEASE
         CommitTimesheet();
-#endif
+#endif // RELEASE
 
         stopwatch.Stop();
         return Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString());

@@ -60,5 +60,5 @@ public static class UI
         Click(By.CssSelector("[href='TSCommit.asp']"));
         Click(WaitUntil(ElementIsVisible(By.Name("btnContinue"))));
     }
-#endif
+#endif // RELEASE
 }
