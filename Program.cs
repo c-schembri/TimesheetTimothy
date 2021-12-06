@@ -51,12 +51,12 @@ public static class Program
         
         Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
 
-        bool loginSuccess;
         var valuePtr = IntPtr.Zero;
         try 
         {
             valuePtr = Marshal.SecureStringToGlobalAllocUnicode(password);
-            OpenTimesheet(username, Marshal.PtrToStringUni(valuePtr) ?? string.Empty, out loginSuccess);
+            if (!OpenTimesheet(username, Marshal.PtrToStringUni(valuePtr) ?? string.Empty))
+                return Result(ExitCode.LoginDetailsIncorrectError);
         } 
         finally 
         {
@@ -64,9 +64,6 @@ public static class Program
             password.Dispose();
         }
 
-        if (!loginSuccess)
-            return Result(ExitCode.LoginDetailsIncorrectError);
-        
         int day   = 0;
         int hours = 0;
         

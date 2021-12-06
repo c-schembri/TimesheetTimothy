@@ -7,22 +7,18 @@ namespace TimesheetTimothy;
 
 public static class UI
 {
-    public static void OpenTimesheet(string username, string password, out bool success)
+    public static bool OpenTimesheet(string username, string password)
     {
         SendKeys(By.Id("userNameInput"), username);
         SendKeys(By.Id("passwordInput"), password);
         Click(By.Id("submitButton"));
 
         if (ElementVisible(By.Id("errorText")))
-        {
-            success = false;
-        }
-        else
-        {
-            WaitUntil(ElementIsVisible(By.ClassName("mainContent")));
-            Click(By.Name("btnLoadTS"));
-            success = true;
-        }
+            return false;
+
+        WaitUntil(ElementIsVisible(By.ClassName("mainContent")));
+        Click(By.Name("btnLoadTS"));
+        return true;
     }
 
     public static void SetJobCode(string jobCode)
