@@ -11,6 +11,15 @@ public static class Program
 {
     public static IWebDriver Driver { get; } = new ChromeDriver(ChromeDriverService.CreateDefaultService());
     
+    private enum ExitCode
+    {
+        TimesheetCommitted,
+        InvalidArgumentCount,
+        InvalidArgumentSpecified,
+        LoginDetailsIncorrectError,
+        JobsFileNotFound
+    }
+    
     /// The main entry point for the program.
     public static int Main(string[] args)
     {
@@ -36,7 +45,7 @@ public static class Program
                 {
                     key = Console.ReadKey(true);
                     password.AppendChar(key.KeyChar);
-                    Console.Write("*");
+                    Console.Write('*');
                 } while (key.Key != ConsoleKey.Enter);
                 
                 Console.WriteLine();
