@@ -1,5 +1,4 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
+﻿using OpenQA.Selenium.Support.UI;
 using static TimesheetTimothy.Program;
 using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 

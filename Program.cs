@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.Json;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using static TimesheetTimothy.UI;
 

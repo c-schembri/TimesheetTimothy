@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using OpenQA.Selenium;
 using static TimesheetTimothy.SeleniumHelpers;
 using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
