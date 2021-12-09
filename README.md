@@ -1,4 +1,4 @@
-\# Timesheet Timothy
+# Timesheet Timothy
 
 Timothy requires a `jobs.txt` file to read from. This file is essentially the input data for the timesheet system. By default, Timothy looks in the current directory for the jobs file.
 The structure of this file is as follows:
@@ -50,7 +50,7 @@ A complete example for the week:
 }
 ```
 
-\# Notes on Timothy's behaviour
+## Notes on Timothy's behaviour
 
 You can enter multiple entries for the day, as seen in Monday on the above example, simply by entering a new anonymous object row.
 
