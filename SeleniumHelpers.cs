@@ -54,7 +54,7 @@ public static class SeleniumHelpers
             WaitUntilInternal(ElementIsVisible(selector));
             return true;
         }
-        catch (TimeoutException)
+        catch (WebDriverTimeoutException)
         {
             return false;
         }

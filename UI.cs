@@ -26,23 +26,46 @@ public static class UI
         SendKeys(By.Name("txtJobNum"), jobCode);
     }
 
-    public static void SetDay(int day)
+    public static void SetDay(string? day)
     {
+        int dayNumber = day switch
+        {
+            "Monday"    => 0,
+            "Tuesday"   => 1,
+            "Wednesday" => 2,
+            "Thursday"  => 3,
+            "Friday"    => 4,
+            _           => throw new ArgumentOutOfRangeException(nameof(day), "Unrecognised day")
+        };
+        
         Click(By.Name("cmbDay"));
 
         var selector = By.TagName("option");
         var options = WaitUntil(ElementIsVisible(selector), selector);
-        Click(options.ElementAt(day));                
+        Click(options.ElementAt(dayNumber));       
     }
-
+    
     public static void SetHours(string hours)
     {
         SendKeys(By.Name("txtHours"), hours);
     }
 
+    public static void SetWorkType(string? workType)
+    {
+        SendKeys(By.Name("txtWorkType"), workType ?? string.Empty);
+    }
+    
     public static void SaveEntry()
     {
         Click(By.Name("Submit"));
+
+        // Sometimes a warning page appears after saving the entry, e.g., when using a new job code.
+        var ignoreWarningButtonSelector = By.Name("btnContinue");
+        if (ElementVisible(ignoreWarningButtonSelector))
+        {
+            Console.WriteLine("Ignoring warning page");
+            Click(ignoreWarningButtonSelector);
+        }
     }
 
     public static int GetEnteredHours()
