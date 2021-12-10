@@ -23,21 +23,20 @@ public static class SeleniumHelpers
 
     public static IWebElement WaitUntil(Func<IWebDriver, IWebElement> cond)
     {
-        return WaitUntilInternal(cond);
+        return InternalWaitUntil(cond);
     }
 
     public static IEnumerable<IWebElement> WaitUntil(Func<IWebDriver, IWebElement> cond, By selector)
     {
-        WaitUntilInternal(cond);
+        InternalWaitUntil(cond);
         return Driver.FindElements(selector);
     }
 
     public static IWebElement FindElement(params By[] selectors)
     {
-        if (selectors.Length == 0)
-            throw new ArgumentException("Length cannot be 0", nameof(selectors));
-        
-        IWebElement latestFind = Driver.FindElement(selectors[0]);
+        EnsureLengthNotZero(selectors, nameof(selectors));
+
+        var latestFind = Driver.FindElement(selectors[0]);
         for (int i = 1; i < selectors.Length; i++)
         {
             latestFind = latestFind.FindElement(selectors[i]);
@@ -50,7 +49,7 @@ public static class SeleniumHelpers
     {
         try
         {
-            WaitUntilInternal(ElementIsVisible(selector));
+            InternalWaitUntil(ElementIsVisible(selector));
             return true;
         }
         catch (WebDriverTimeoutException)
@@ -59,7 +58,7 @@ public static class SeleniumHelpers
         }
     }
 
-    private static IWebElement WaitUntilInternal(Func<IWebDriver, IWebElement> cond)
+    private static IWebElement InternalWaitUntil(Func<IWebDriver, IWebElement> cond)
     {
         return new WebDriverWait(Driver, TimeSpan.FromSeconds(1)).Until(cond);
     }
