@@ -59,21 +59,20 @@ public static class Program
                 return Result(ExitCode.InvalidArgumentSpecified, args[0]);
         }
         
-        Stopwatch stopwatch = new();
-        stopwatch.Start();
+        Stopwatch stopwatch = Stopwatch.StartNew();
         
         Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
 
-        var valuePtr = IntPtr.Zero;
+        var securePasswordPtr = IntPtr.Zero;
         try 
         {
-            valuePtr = Marshal.SecureStringToGlobalAllocUnicode(password);
-            if (!OpenTimesheet(username, Marshal.PtrToStringUni(valuePtr) ?? string.Empty))
+            securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
+            if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
                 return Result(ExitCode.LoginDetailsIncorrect);
         } 
         finally 
         {
-            Marshal.ZeroFreeGlobalAllocUnicode(valuePtr);
+            Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
             password.Dispose();
         }
 
