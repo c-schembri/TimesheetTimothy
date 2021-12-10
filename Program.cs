@@ -103,7 +103,7 @@ public static class Program
                 SetWorkType(workType);
                 SaveEntry();
 
-                totalHours += int.Parse(hours!);
+                totalHours += int.Parse(hours);
             }
         }    
         
@@ -117,7 +117,7 @@ public static class Program
         return Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString());
     }
 
-    private static int Result(ExitCode code, string arg = "")
+    private static int Result(ExitCode code, string arg = EmptyString)
     {
         Driver.Quit();
         string message;
