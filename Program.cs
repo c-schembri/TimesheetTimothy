@@ -3,13 +3,15 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.Json;
 using OpenQA.Selenium.Chrome;
+using WebDriverManager.DriverConfigs.Impl;
+using WebDriverManager;
 using static TimesheetTimothy.UI;
 
 namespace TimesheetTimothy;
 
 public static class Program
 {
-    public static IWebDriver Driver { get; } = new ChromeDriver(ChromeDriverService.CreateDefaultService());
+    public static IWebDriver Driver { get; } = new ChromeDriver();
     
     private enum ExitCode
     {
@@ -29,6 +31,7 @@ public static class Program
     /// The main entry point for the program.
     public static int Main(string[] args)
     {
+        new DriverManager().SetUpDriver(new ChromeConfig());
         if (args.Length != 2)
             return Result(ExitCode.InvalidArgumentCount);
         
@@ -60,7 +63,7 @@ public static class Program
         }
         
         Stopwatch stopwatch = Stopwatch.StartNew();
-        
+
         Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
 
         var securePasswordPtr = IntPtr.Zero;
