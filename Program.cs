@@ -26,7 +26,7 @@ public static class Program
     }
     private record Week(Day? Monday, Day? Tuesday, Day? Wednesday, Day? Thursday, Day? Friday);
     private record Day(Entry[]? Entries);
-    private record Entry(string? JobCode, string? Hours, string? WorkType);
+    private record Entry(string? JobCode, string? Hours, string? WorkType, string? Comments);
 
     /// The main entry point for the program.
     public static int Main(string[] args)
@@ -92,21 +92,21 @@ public static class Program
             if (day.Entries is null)
                 return Result(ExitCode.DayMissingEntries, dayProp.Name);
             
-            foreach ((string? jobCode, string? hours, string? workType) in day.Entries)
+            foreach (var entry in day.Entries)
             {
-                if (string.IsNullOrWhiteSpace(jobCode))
+                if (string.IsNullOrWhiteSpace(entry.JobCode))
                     return Result(ExitCode.EntryMissingJobCode, dayProp.Name);
                 
-                if (string.IsNullOrWhiteSpace(hours))
+                if (string.IsNullOrWhiteSpace(entry.Hours))
                     return Result(ExitCode.EntryMissingHours, dayProp.Name);
                 
-                SetJobCode(jobCode);
+                SetJobCode(entry.JobCode);
                 SetDay(dayProp.Name);
-                SetHours(hours);
-                SetWorkType(workType);
+                SetHours(entry.Hours);
+                SetWorkType(entry.WorkType);
                 SaveEntry();
 
-                totalHours += int.Parse(hours);
+                totalHours += int.Parse(entry.Hours);
             }
         }    
         
