@@ -104,6 +104,7 @@ public static class Program
                 SetDay(dayProp.Name);
                 SetHours(entry.Hours);
                 SetWorkType(entry.WorkType);
+                SetComments(entry.Comments);
                 SaveEntry();
 
                 totalHours += int.Parse(entry.Hours);

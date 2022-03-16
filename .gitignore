@@ -395,3 +395,4 @@ FodyWeavers.xsd
 *.sln.iml
 .idea/*
 /jobs.txt
+/Properties/launchSettings.json

@@ -53,7 +53,12 @@ public static class UI
     {
         SendKeys(By.Name("txtWorkType"), workType ?? string.Empty);
     }
-    
+
+    internal static void SetComments(string? comments)
+    {
+        SendKeys(By.Name("txaComments"), comments ?? string.Empty);
+    }
+
     public static void SaveEntry()
     {
         Click(By.Name("Submit"));
