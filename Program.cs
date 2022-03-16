@@ -59,7 +59,7 @@ public static class Program
                 return Result(ExitCode.InvalidArgumentSpecified, args[0]);
         }
         
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
         
         Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
 
