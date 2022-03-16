@@ -81,7 +81,8 @@ public static class Program
 
         int totalHours = 0;
         
-        var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName));
+        // Although not technically valid JSON, it's easier to let trailing commas in instead of enforcing the users to clean-up the `jobs.txt` file.
+        var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName), new JsonSerializerOptions { AllowTrailingCommas = true });
         foreach (var dayProp in typeof(Week).GetProperties())
         {
             // Not all days need to be defined by the user.
@@ -111,6 +112,8 @@ public static class Program
             }
         }    
         
+        // Perform a sanity check and ensure that the retrieved total hours from the `jobs.txt` file equals the amount of hours actually entered into the timesheet.
+        // If this assertion fails, then something has gone wrong in prior code execution.
         Trace.Assert(totalHours == GetEnteredHours());
         
 #if RELEASE
