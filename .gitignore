@@ -394,3 +394,5 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 .idea/*
+/jobs.txt
+/Properties/launchSettings.json
