@@ -12,21 +12,10 @@ namespace TimesheetTimothy;
 public static class Program
 {
     public static IWebDriver Driver { get; } = new ChromeDriver();
-    
-    private enum ExitCode
-    {
-        TimesheetCommitted,
-        InvalidArgumentCount,
-        InvalidArgumentSpecified,
-        LoginDetailsIncorrect,
-        JobsFileNotFound,
-        DayMissingEntries,
-        EntryMissingJobCode,
-        EntryMissingHours
-    }
     private record Week(Day? Monday, Day? Tuesday, Day? Wednesday, Day? Thursday, Day? Friday);
     private record Day(Entry[]? Entries);
     private record Entry(string? JobCode, string? Hours, string? WorkType, string? Comments);
+    const string jobsFileName = "jobs.json";
 
     /// The main entry point for the program.
     public static int Main(string[] args)
@@ -35,7 +24,6 @@ public static class Program
         if (args.Length != 2)
             return Result(ExitCode.InvalidArgumentCount);
         
-        const string jobsFileName = "jobs.txt";
         if (!File.Exists(jobsFileName))
             return Result(ExitCode.JobsFileNotFound);
 
