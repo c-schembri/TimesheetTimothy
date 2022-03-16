@@ -3,13 +3,15 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.Json;
 using OpenQA.Selenium.Chrome;
+using WebDriverManager.DriverConfigs.Impl;
+using WebDriverManager;
 using static TimesheetTimothy.UI;
 
 namespace TimesheetTimothy;
 
 public static class Program
 {
-    public static IWebDriver Driver { get; } = new ChromeDriver(ChromeDriverService.CreateDefaultService());
+    public static IWebDriver Driver { get; } = new ChromeDriver();
     
     private enum ExitCode
     {
@@ -24,11 +26,12 @@ public static class Program
     }
     private record Week(Day? Monday, Day? Tuesday, Day? Wednesday, Day? Thursday, Day? Friday);
     private record Day(Entry[]? Entries);
-    private record Entry(string? JobCode, string? Hours, string? WorkType);
+    private record Entry(string? JobCode, string? Hours, string? WorkType, string? Comments);
 
     /// The main entry point for the program.
     public static int Main(string[] args)
     {
+        new DriverManager().SetUpDriver(new ChromeConfig());
         if (args.Length != 2)
             return Result(ExitCode.InvalidArgumentCount);
         
@@ -89,21 +92,22 @@ public static class Program
             if (day.Entries is null)
                 return Result(ExitCode.DayMissingEntries, dayProp.Name);
             
-            foreach ((string? jobCode, string? hours, string? workType) in day.Entries)
+            foreach (var entry in day.Entries)
             {
-                if (string.IsNullOrWhiteSpace(jobCode))
+                if (string.IsNullOrWhiteSpace(entry.JobCode))
                     return Result(ExitCode.EntryMissingJobCode, dayProp.Name);
                 
-                if (string.IsNullOrWhiteSpace(hours))
+                if (string.IsNullOrWhiteSpace(entry.Hours))
                     return Result(ExitCode.EntryMissingHours, dayProp.Name);
                 
-                SetJobCode(jobCode);
+                SetJobCode(entry.JobCode);
                 SetDay(dayProp.Name);
-                SetHours(hours);
-                SetWorkType(workType);
+                SetHours(entry.Hours);
+                SetWorkType(entry.WorkType);
+                SetComments(entry.Comments);
                 SaveEntry();
 
-                totalHours += int.Parse(hours);
+                totalHours += int.Parse(entry.Hours);
             }
         }    
         
