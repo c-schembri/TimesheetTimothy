@@ -7,7 +7,7 @@ The structure of this file is as follows:
 {
     "{day}": {
         "Entries": [
-            { "JobCode": "{job_code}}", "Hours": "{hours}", "WorkType": "{work_type}" },   
+            { "JobCode": "{job_code}}", "Hours": "{hours}", "WorkType": "{work_type}", : "Comments": "{comments}"},   
         ]
     }
 }
@@ -44,7 +44,7 @@ A complete example for the week:
 	
 	"Friday": {
 		"Entries": [	
-			{ "JobCode": "BAMTM20001", "Hours": "8", "WorkType": "NOCHAR" }		
+			{ "JobCode": "BAMTM20001", "Hours": "8", "WorkType": "NOCHAR", "Comments": "Business development" }		
 		]
 	}
 }
@@ -96,9 +96,9 @@ For instance, the below is valid:
 {
 	"Monday": {
 		"Entries": [
-			{ "JobCode": "BAMTM20001", "Hours": "4", "WorkType": "CHAR" },		
-			{ "JobCode": "BAMTM20001", "Hours": "4", "WorkType": "NOCHAR" }
+			{ "JobCode": "BAMTM20001", "Hours": "8" }		
 		]
 	},
 }
 ```
+
