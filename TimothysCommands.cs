@@ -1,0 +1,160 @@
+﻿using System.CommandLine;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Security;
+using System.Text.Json;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
+using static TimesheetTimothy.UI;
+using static TimesheetTimothy.Program;
+
+namespace TimesheetTimothy
+{
+    internal static class TimothysCommands
+    {
+        private record Week(Day? Monday, Day? Tuesday, Day? Wednesday, Day? Thursday, Day? Friday);
+        private record Day(Entry[]? Entries);
+        private record Entry(string? JobCode, string? Hours, string? WorkType, string? Comments);
+        const string jobsFileName = "jobs.json";
+
+        public static System.CommandLine.Command Commit
+        {
+            get
+            {
+                System.CommandLine.Command commitCommand = new("commit", "Commit the timesheet");
+                commitCommand.AddArgument(CommitArguments.Email);
+                commitCommand.SetHandler((string e) => CommitTimesheet(e), CommitArguments.Email);
+                return commitCommand;
+            }
+        }
+
+        private static int CommitTimesheet(string email)
+        {
+            string username;
+            SecureString password = new();
+
+            username = email;
+            Console.WriteLine($"Please enter the password for {username}");
+
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(true);
+                password.AppendChar(key.KeyChar);
+            } while (key.Key != ConsoleKey.Enter);
+
+            Console.WriteLine();
+            new DriverManager().SetUpDriver(new ChromeConfig());
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
+
+            var securePasswordPtr = IntPtr.Zero;
+            try
+            {
+                securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
+                if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
+                    return Result(ExitCode.LoginDetailsIncorrect);
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
+                password.Dispose();
+            }
+
+            int totalHours = 0;
+
+            var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName));
+            foreach (var dayProp in typeof(Week).GetProperties())
+            {
+                // Not all days need to be defined by the user.
+                if (dayProp.GetValue(week) is not Day day)
+                    continue;
+
+                // However, if a day _is_ defined, then the program expects some entries in that day.
+                if (day.Entries is null)
+                    return Result(ExitCode.DayMissingEntries, dayProp.Name);
+
+                foreach (var entry in day.Entries)
+                {
+                    if (string.IsNullOrWhiteSpace(entry.JobCode))
+                        return Result(ExitCode.EntryMissingJobCode, dayProp.Name);
+
+                    if (string.IsNullOrWhiteSpace(entry.Hours))
+                        return Result(ExitCode.EntryMissingHours, dayProp.Name);
+
+                    SetJobCode(entry.JobCode);
+                    SetDay(dayProp.Name);
+                    SetHours(entry.Hours);
+                    SetWorkType(entry.WorkType);
+                    SetComments(entry.Comments);
+                    SaveEntry();
+
+                    totalHours += int.Parse(entry.Hours);
+                }
+            }
+
+            Trace.Assert(totalHours == GetEnteredHours());
+
+#if RELEASE
+        CommitTimesheet();
+#endif // RELEASE
+
+            stopwatch.Stop();
+            return Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString());
+        }
+
+        private static int Result(ExitCode code, string arg = EmptyString)
+        {
+            Driver.Quit();
+            string message;
+
+            switch (code)
+            {
+                case ExitCode.TimesheetCommitted:
+                    Debug.Assert(!string.IsNullOrWhiteSpace(arg));
+#if RELEASE
+                message = $"Timothy committed your timesheet in {arg} milliseconds";
+#else
+                    message = $"Timothy would have committed your timesheet in {arg} milliseconds (debug build)";
+#endif // RELEASE
+                    break;
+
+                case ExitCode.InvalidArgumentCount:
+                    message = "Timothy requires two arguments, command and target user (e.g., 'commit' and 'user@email.com')";
+                    break;
+
+                case ExitCode.InvalidArgumentSpecified:
+                    Debug.Assert(!string.IsNullOrWhiteSpace(arg));
+                    message = $"'{arg}' is an unrecognised command";
+                    break;
+
+                case ExitCode.LoginDetailsIncorrect:
+                    message = "Entered username or password is incorrect";
+                    break;
+
+                case ExitCode.JobsFileNotFound:
+                    message = "Could not find 'jobs.txt' file";
+                    break;
+
+                case ExitCode.DayMissingEntries:
+                    message = $"Day '{arg}' was defined, but no entries were defined for this day";
+                    break;
+
+                case ExitCode.EntryMissingJobCode:
+                    message = $"Day '{arg}' has an entry missing a job code";
+                    break;
+
+                case ExitCode.EntryMissingHours:
+                    message = $"Day '{arg}' has an entry missing hours";
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(code));
+            }
+
+            Console.WriteLine($"{message}... Exiting.");
+            return (int)code;
+        }
+    }
+}
