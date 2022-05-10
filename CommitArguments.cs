@@ -6,7 +6,7 @@ namespace TimesheetTimothy
     {
         private static Argument<string>? email;
 
-        public static Argument<string> Email
+        public static Argument<string> Username
         {
             get
             {

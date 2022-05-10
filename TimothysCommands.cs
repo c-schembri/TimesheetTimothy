@@ -22,45 +22,19 @@ namespace TimesheetTimothy
             get
             {
                 System.CommandLine.Command commitCommand = new("commit", "Commit the timesheet");
-                commitCommand.AddArgument(CommitArguments.Email);
-                commitCommand.SetHandler((string e) => CommitTimesheet(e), CommitArguments.Email);
+                commitCommand.AddArgument(CommitArguments.Username);
+                commitCommand.SetHandler((string e) => CommitTimesheet(e), CommitArguments.Username);
                 return commitCommand;
             }
         }
 
-        private static int CommitTimesheet(string email)
+        private static int CommitTimesheet(string username)
         {
-            string username;
-            SecureString password = new();
-
-            username = email;
-            Console.WriteLine($"Please enter the password for {username}");
-
-            ConsoleKeyInfo key;
-            do
-            {
-                key = Console.ReadKey(true);
-                password.AppendChar(key.KeyChar);
-            } while (key.Key != ConsoleKey.Enter);
-
-            Console.WriteLine();
-            new DriverManager().SetUpDriver(new ChromeConfig());
+            SecureString password = GetPassword(username);
             Stopwatch stopwatch = Stopwatch.StartNew();
+            SetUpChromeDriver();
 
-            Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
-
-            var securePasswordPtr = IntPtr.Zero;
-            try
-            {
-                securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
-                if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
-                    return Result(ExitCode.LoginDetailsIncorrect);
-            }
-            finally
-            {
-                Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
-                password.Dispose();
-            }
+            var securePasswordPtr = GetSecurePwd(username, password);
 
             int totalHours = 0;
 
@@ -102,6 +76,47 @@ namespace TimesheetTimothy
 
             stopwatch.Stop();
             return Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString());
+        }
+
+        private static IntPtr GetSecurePwd(string username, SecureString password)
+        {
+            var securePasswordPtr = IntPtr.Zero;
+            try
+            {
+                securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
+                if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
+                    throw new Exception($"Exit Code: {Result(ExitCode.LoginDetailsIncorrect)}");
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
+                password.Dispose();
+            }
+
+            return securePasswordPtr;
+        }
+
+        private static void SetUpChromeDriver()
+        {
+            new DriverManager().SetUpDriver(new ChromeConfig());
+
+            Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
+        }
+
+        private static SecureString GetPassword(string username)
+        {
+            SecureString password = new();
+            Console.WriteLine($"Please enter the password for {username}");
+
+            ConsoleKeyInfo key;
+            do
+            {
+                key = Console.ReadKey(true);
+                password.AppendChar(key.KeyChar);
+            } while (key.Key != ConsoleKey.Enter);
+
+            Console.WriteLine();
+            return password;
         }
 
         private static int Result(ExitCode code, string arg = EmptyString)
