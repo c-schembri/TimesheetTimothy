@@ -47,15 +47,15 @@ namespace TimesheetTimothy
 
                 // However, if a day _is_ defined, then the program expects some entries in that day.
                 if (day.Entries is null)
-                    return Result(ExitCode.DayMissingEntries, dayProp.Name);
+                    throw new Exception($"{Result(ExitCode.DayMissingEntries, dayProp.Name)}");
 
                 foreach (var entry in day.Entries)
                 {
                     if (string.IsNullOrWhiteSpace(entry.JobCode))
-                        return Result(ExitCode.EntryMissingJobCode, dayProp.Name);
+                        throw new Exception($"{Result(ExitCode.EntryMissingJobCode, dayProp.Name)}");
 
                     if (string.IsNullOrWhiteSpace(entry.Hours))
-                        return Result(ExitCode.EntryMissingHours, dayProp.Name);
+                        throw new Exception($"{Result(ExitCode.EntryMissingHours, dayProp.Name)}");
 
                     SetJobCode(entry.JobCode);
                     SetDay(dayProp.Name);
@@ -75,7 +75,8 @@ namespace TimesheetTimothy
 #endif // RELEASE
 
             stopwatch.Stop();
-            return Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString());
+            Console.WriteLine($"{Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString())}");
+            return 0;
         }
 
         private static IntPtr GetSecurePwd(string username, SecureString password)
@@ -85,7 +86,7 @@ namespace TimesheetTimothy
             {
                 securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
                 if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
-                    throw new Exception($"Exit Code: {Result(ExitCode.LoginDetailsIncorrect)}");
+                    throw new Exception($"{Result(ExitCode.LoginDetailsIncorrect)}");
             }
             finally
             {
@@ -119,7 +120,7 @@ namespace TimesheetTimothy
             return password;
         }
 
-        private static int Result(ExitCode code, string arg = EmptyString)
+        private static string Result(ExitCode code, string arg = EmptyString)
         {
             Driver.Quit();
             string message;
@@ -168,8 +169,7 @@ namespace TimesheetTimothy
                     throw new ArgumentOutOfRangeException(nameof(code));
             }
 
-            Console.WriteLine($"{message}... Exiting.");
-            return (int)code;
+            return $"{message}... Exiting.";
         }
     }
 }
