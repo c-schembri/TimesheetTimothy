@@ -4,16 +4,15 @@ namespace TimesheetTimothy
 {
     public static class CommitArguments
     {
-        private static Argument<string>? email;
+        private static Argument<string>? username;
 
         public static Argument<string> Username
         {
             get
             {
-                email ??= new("Email", "Your login email address");
-                return email;
+                username ??= new("Username", "Your login email address, e.g. user@email.com");
+                return username;
             }
-            private set { }
         }
     }
 }
