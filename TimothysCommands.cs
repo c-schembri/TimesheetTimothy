@@ -51,18 +51,7 @@ namespace TimesheetTimothy
 
                 foreach (var entry in day.Entries)
                 {
-                    if (string.IsNullOrWhiteSpace(entry.JobCode))
-                        throw new Exception($"{Result(ExitCode.EntryMissingJobCode, dayProp.Name)}");
-
-                    if (string.IsNullOrWhiteSpace(entry.Hours))
-                        throw new Exception($"{Result(ExitCode.EntryMissingHours, dayProp.Name)}");
-
-                    SetJobCode(entry.JobCode);
-                    SetDay(dayProp.Name);
-                    SetHours(entry.Hours);
-                    SetWorkType(entry.WorkType);
-                    SetComments(entry.Comments);
-                    SaveEntry();
+                    SetJobEntry(dayProp, entry);
 
                     totalHours += int.Parse(entry.Hours);
                 }
@@ -77,6 +66,22 @@ namespace TimesheetTimothy
             stopwatch.Stop();
             Console.WriteLine($"{Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString())}");
             return 0;
+        }
+
+        private static void SetJobEntry(System.Reflection.PropertyInfo dayProp, Entry entry)
+        {
+            if (string.IsNullOrWhiteSpace(entry.JobCode))
+                throw new Exception($"{Result(ExitCode.EntryMissingJobCode, dayProp.Name)}");
+
+            if (string.IsNullOrWhiteSpace(entry.Hours))
+                throw new Exception($"{Result(ExitCode.EntryMissingHours, dayProp.Name)}");
+
+            SetJobCode(entry.JobCode);
+            SetDay(dayProp.Name);
+            SetHours(entry.Hours);
+            SetWorkType(entry.WorkType);
+            SetComments(entry.Comments);
+            SaveEntry();
         }
 
         private static IntPtr GetSecurePwd(string username, SecureString password)
