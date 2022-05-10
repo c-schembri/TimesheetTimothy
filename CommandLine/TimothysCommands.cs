@@ -1,13 +1,4 @@
 ﻿using System.CommandLine;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text.Json;
-using WebDriverManager;
-using WebDriverManager.DriverConfigs.Impl;
-using static TimesheetTimothy.UI;
-using static TimesheetTimothy.Program;
-using static TimesheetTimothy.ExitMessages;
 using static TimesheetTimothy.TimesheetPage;
 
 namespace TimesheetTimothy

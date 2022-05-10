@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security;
-using static TimesheetTimothy.SeleniumHelpers;
-using static TimesheetTimothy.ExitMessages;
-using static TimesheetTimothy.UI;
-using System.Text;
-using System.Threading.Tasks;
 using System.Text.Json;
+using static TimesheetTimothy.ExitMessages;
+using static TimesheetTimothy.SeleniumHelpers;
+using static TimesheetTimothy.UI;
 
 namespace TimesheetTimothy
 {
