@@ -17,7 +17,7 @@ internal static class TimesheetPage
     internal static int DoYourTimesheet(string username, string jobsFileName)
     {
         SecureString password = GetPassword(username);
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        var stopwatch = Stopwatch.StartNew();
 
         SetUpDriver(new ChromeConfig()); // TODO: Factory pattern to return different configs
         OpenTimesheetPage(username, password);
