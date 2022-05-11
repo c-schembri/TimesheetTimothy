@@ -5,6 +5,7 @@ using System.Text.Json;
 using static TimesheetTimothy.ExitMessages;
 using static TimesheetTimothy.SeleniumHelpers;
 using static TimesheetTimothy.UI;
+using static TimesheetTimothy.UserPrompts;
 
 namespace TimesheetTimothy
 {
@@ -45,7 +46,7 @@ namespace TimesheetTimothy
                 foreach (var entry in day.Entries)
                 {
                     SetJobEntry(dayProp, entry);
-                    totalHours += int.Parse(entry.Hours);
+                    totalHours += int.Parse(entry.Hours!);
                 }
             }
 
@@ -54,11 +55,8 @@ namespace TimesheetTimothy
 
         private static void SetJobEntry(System.Reflection.PropertyInfo dayProp, Entry entry)
         {
-            if (string.IsNullOrWhiteSpace(entry.JobCode))
-                throw new Exception($"{Result(ExitCode.EntryMissingJobCode, dayProp.Name)}");
-
-            if (string.IsNullOrWhiteSpace(entry.Hours))
-                throw new Exception($"{Result(ExitCode.EntryMissingHours, dayProp.Name)}");
+            ArgumentNullException.ThrowIfNull(entry.JobCode, "JobCode");
+            ArgumentNullException.ThrowIfNull(entry.Hours, "Hours");
 
             SetJobCode(entry.JobCode);
             SetDay(dayProp.Name);
@@ -82,22 +80,6 @@ namespace TimesheetTimothy
                 Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
                 password.Dispose();
             }
-        }
-
-        private static SecureString GetPassword(string username)
-        {
-            SecureString password = new();
-            Console.WriteLine($"Please enter the password for {username}");
-
-            ConsoleKeyInfo key;
-            do
-            {
-                key = Console.ReadKey(true);
-                password.AppendChar(key.KeyChar);
-            } while (key.Key != ConsoleKey.Enter);
-
-            Console.WriteLine();
-            return password;
         }
     }
 }
