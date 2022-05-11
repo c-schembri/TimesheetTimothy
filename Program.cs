@@ -23,7 +23,7 @@ public static class Program
         }
         finally
         {
-            Driver.Quit();
+            PageInteraction.DriverManager.TearDownDriver();
         }
     }
 }

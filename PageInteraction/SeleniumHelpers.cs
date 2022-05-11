@@ -8,13 +8,6 @@ namespace TimesheetTimothy.PageInteraction;
 
 public static class SeleniumHelpers
 {
-    public static void SetUpChromeDriver()
-    {
-        new DriverManager().SetUpDriver(new ChromeConfig());
-
-        Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
-    }
-
     public static void SendKeys(By selector, string input)
     {
         Driver.FindElement(selector).SendKeys(input);

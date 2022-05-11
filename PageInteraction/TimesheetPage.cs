@@ -4,10 +4,11 @@ using System.Security;
 using System.Text.Json;
 using TimesheetTimothy.ProgramExit;
 using static TimesheetTimothy.ProgramExit.ExitMessages;
-using static TimesheetTimothy.PageInteraction.SeleniumHelpers;
+using static TimesheetTimothy.PageInteraction.DriverManager;
 using static TimesheetTimothy.PageInteraction.UI;
 using static TimesheetTimothy.CommandLine.UserPrompts;
 using TimesheetTimothy.DataStructures;
+using WebDriverManager.DriverConfigs.Impl;
 
 namespace TimesheetTimothy.PageInteraction;
 
@@ -18,7 +19,7 @@ internal static class TimesheetPage
         SecureString password = GetPassword(username);
         Stopwatch stopwatch = Stopwatch.StartNew();
 
-        SetUpChromeDriver();
+        SetUpDriver(new ChromeConfig()); // TODO: Factory pattern to return different configs
         OpenTimesheetPage(username, password);
         SetTimesheetEntries(jobsFileName);
 
@@ -52,7 +53,8 @@ internal static class TimesheetPage
         int totalHours = 0;
         var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName)) ?? throw new NullReferenceException();
         ProcessWeek(week, ref totalHours);
-        Trace.Assert(totalHours == GetEnteredHours());
+        Trace.Assert(totalHours == GetEnteredHours(), 
+            "Hours entered do not match the total hours of the timesheet - was there already entries for this week?");
     }
 
     private static void ProcessWeek(Week week, ref int totalHours)
