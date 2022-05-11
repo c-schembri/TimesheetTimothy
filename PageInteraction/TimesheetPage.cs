@@ -25,7 +25,7 @@ namespace TimesheetTimothy
 #endif // RELEASE
 
             stopwatch.Stop();
-            Console.WriteLine($"{Result(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString())}");
+            Console.WriteLine($"{GetResultMsg(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString())}");
             return 0;
         }
 
@@ -36,7 +36,7 @@ namespace TimesheetTimothy
             {
                 securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
                 if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
-                    throw new Exception($"{Result(ExitCode.LoginDetailsIncorrect)}");
+                    throw new Exception($"{GetResultMsg(ExitCode.LoginDetailsIncorrect)}");
             }
             finally
             {
@@ -63,7 +63,7 @@ namespace TimesheetTimothy
 
                 // However, if a day _is_ defined, then the program expects some entries in that day.
                 if (day.Entries is null)
-                    throw new Exception($"{Result(ExitCode.DayMissingEntries, dayProp.Name)}");
+                    throw new Exception($"{GetResultMsg(ExitCode.DayMissingEntries, dayProp.Name)}");
 
                 foreach (var entry in day.Entries)
                 {
