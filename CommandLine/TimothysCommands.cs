@@ -1,23 +1,22 @@
 ﻿using System.CommandLine;
-using static TimesheetTimothy.TimesheetPage;
+using static TimesheetTimothy.PageInteraction.TimesheetPage;
 using Command = System.CommandLine.Command;
 
-namespace TimesheetTimothy
+namespace TimesheetTimothy.CommandLine;
+
+internal static class TimothysCommands
 {
-    internal static class TimothysCommands
+    const string jobsFileName = "jobs.json";
+
+    public static Command Commit
     {
-        const string jobsFileName = "jobs.json";
-
-        public static Command Commit
+        get
         {
-            get
-            {
-                Command commitCommand = new("commit", "Commit the timesheet");
-                commitCommand.AddArgument(CommitArguments.Username);
-                commitCommand.SetHandler((string e) => DoYourTimesheet(e, jobsFileName), CommitArguments.Username);
+            Command commitCommand = new("commit", "Commit the timesheet");
+            commitCommand.AddArgument(CommitArguments.Username);
+            commitCommand.SetHandler((string e) => DoYourTimesheet(e, jobsFileName), CommitArguments.Username);
 
-                return commitCommand;
-            }
+            return commitCommand;
         }
     }
 }

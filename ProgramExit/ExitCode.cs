@@ -1,4 +1,4 @@
-﻿namespace TimesheetTimothy;
+﻿namespace TimesheetTimothy.ProgramExit;
 
 public enum ExitCode
 {

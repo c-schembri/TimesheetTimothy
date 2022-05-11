@@ -1,4 +1,4 @@
-﻿namespace TimesheetTimothy;
+﻿namespace TimesheetTimothy.DataStructures;
 
 internal record Entry(string? JobCode, string? Hours, string? WorkType, string? Comments);
 internal record Day(Entry[]? Entries);

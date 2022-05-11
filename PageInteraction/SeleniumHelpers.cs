@@ -4,7 +4,7 @@ using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 using WebDriverManager.DriverConfigs.Impl;
 using WebDriverManager;
 
-namespace TimesheetTimothy;
+namespace TimesheetTimothy.PageInteraction;
 
 public static class SeleniumHelpers
 {
@@ -53,7 +53,7 @@ public static class SeleniumHelpers
 
         return latestFind;
     }
-    
+
     public static bool ElementVisible(By selector)
     {
         try

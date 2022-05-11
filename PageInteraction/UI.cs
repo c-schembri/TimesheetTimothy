@@ -1,8 +1,8 @@
 ﻿using System.Text.RegularExpressions;
-using static TimesheetTimothy.SeleniumHelpers;
+using static TimesheetTimothy.PageInteraction.SeleniumHelpers;
 using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
-namespace TimesheetTimothy;
+namespace TimesheetTimothy.PageInteraction;
 
 public static class UI
 {
@@ -29,21 +29,21 @@ public static class UI
     {
         int dayNumber = day switch
         {
-            "Monday"    => 0,
-            "Tuesday"   => 1,
+            "Monday" => 0,
+            "Tuesday" => 1,
             "Wednesday" => 2,
-            "Thursday"  => 3,
-            "Friday"    => 4,
-            _           => throw new ArgumentOutOfRangeException(nameof(day), "Unrecognised day")
+            "Thursday" => 3,
+            "Friday" => 4,
+            _ => throw new ArgumentOutOfRangeException(nameof(day), "Unrecognised day")
         };
-        
+
         Click(By.Name("cmbDay"));
 
         var selector = By.TagName("option");
         var options = WaitUntil(ElementIsVisible(selector), selector);
-        Click(options.ElementAt(dayNumber));       
+        Click(options.ElementAt(dayNumber));
     }
-    
+
     public static void SetHours(string hours)
     {
         SendKeys(By.Name("txtHours"), hours);
@@ -77,7 +77,7 @@ public static class UI
         string enteredHours = FindElement(
             By.Name("ListEntries"),
             By.CssSelector("[bgcolor='#CCCCCC'] [align='right']")).Text;
-        
+
         return int.Parse(Regex.Replace(enteredHours, "[^0-9]", string.Empty));
     }
 

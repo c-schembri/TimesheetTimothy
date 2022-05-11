@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium.Chrome;
 using System.CommandLine;
+using TimesheetTimothy.CommandLine;
 
 namespace TimesheetTimothy;
 
