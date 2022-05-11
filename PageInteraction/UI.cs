@@ -25,23 +25,22 @@ public static class UI
         SendKeys(By.Name("txtJobNum"), jobCode);
     }
 
+    private static readonly Dictionary<string, int> dayNumberLookup = new()
+    {
+        { "Monday",    0 },
+        { "Tuesday",   1 },
+        { "Wednesday", 2 },
+        { "Thursday",  3 },
+        { "Friday",    4 }
+    };
+
     public static void SetDay(string day)
     {
-        int dayNumber = day switch
-        {
-            "Monday" => 0,
-            "Tuesday" => 1,
-            "Wednesday" => 2,
-            "Thursday" => 3,
-            "Friday" => 4,
-            _ => throw new ArgumentOutOfRangeException(nameof(day), "Unrecognised day")
-        };
-
         Click(By.Name("cmbDay"));
 
         var selector = By.TagName("option");
         var options = WaitUntil(ElementIsVisible(selector), selector);
-        Click(options.ElementAt(dayNumber));
+        Click(options.ElementAt(dayNumberLookup[day]));
     }
 
     public static void SetHours(string hours)
