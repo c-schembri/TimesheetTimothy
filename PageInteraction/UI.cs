@@ -25,7 +25,7 @@ public static class UI
         SendKeys(By.Name("txtJobNum"), jobCode);
     }
 
-    public static void SetDay(string? day)
+    public static void SetDay(string day)
     {
         int dayNumber = day switch
         {

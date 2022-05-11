@@ -8,13 +8,13 @@ namespace TimesheetTimothy
     {
         const string jobsFileName = "jobs.json";
 
-        public static System.CommandLine.Command Commit
+        public static Command Commit
         {
             get
             {
                 Command commitCommand = new("commit", "Commit the timesheet");
                 commitCommand.AddArgument(CommitArguments.Username);
-                commitCommand.SetHandler((string e) => CommitTimesheet(e, jobsFileName), CommitArguments.Username);
+                commitCommand.SetHandler((string e) => DoYourTimesheet(e, jobsFileName), CommitArguments.Username);
 
                 return commitCommand;
             }

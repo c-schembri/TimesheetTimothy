@@ -11,7 +11,7 @@ namespace TimesheetTimothy
 {
     internal static class TimesheetPage
     {
-        internal static int CommitTimesheet(string username, string jobsFileName)
+        internal static int DoYourTimesheet(string username, string jobsFileName)
         {
             SecureString password = GetPassword(username);
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -21,7 +21,7 @@ namespace TimesheetTimothy
             SetTimesheetEntries(jobsFileName);
 
 #if RELEASE
-        CommitTimesheet();
+            CommitTimesheet();
 #endif // RELEASE
 
             stopwatch.Stop();
@@ -32,7 +32,13 @@ namespace TimesheetTimothy
         private static void SetTimesheetEntries(string jobsFileName)
         {
             int totalHours = 0;
-            var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName));
+            var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName)) ?? throw new NullReferenceException();
+            ProcessWeek(week, ref totalHours);
+            Trace.Assert(totalHours == GetEnteredHours());
+        }
+
+        private static void ProcessWeek(Week week, ref int totalHours)
+        {
             foreach (var dayProp in typeof(Week).GetProperties())
             {
                 // Not all days need to be defined by the user.
@@ -49,8 +55,6 @@ namespace TimesheetTimothy
                     totalHours += int.Parse(entry.Hours!);
                 }
             }
-
-            Trace.Assert(totalHours == GetEnteredHours());
         }
 
         private static void SetJobEntry(System.Reflection.PropertyInfo dayProp, Entry entry)
