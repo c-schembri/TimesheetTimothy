@@ -16,8 +16,14 @@ public static class Program
             TimothysCommands.Commit       
         };
 
-        var result = cmd.Invoke(args);
-        Driver.Quit();
-        return result;
+        try
+        {
+            var result = cmd.Invoke(args);
+            return result;
+        }
+        finally
+        {
+            Driver.Quit();
+        }
     }
 }
