@@ -29,6 +29,22 @@ namespace TimesheetTimothy
             return 0;
         }
 
+        private static void OpenTimesheetPage(string username, SecureString password)
+        {
+            var securePasswordPtr = IntPtr.Zero;
+            try
+            {
+                securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
+                if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
+                    throw new Exception($"{Result(ExitCode.LoginDetailsIncorrect)}");
+            }
+            finally
+            {
+                Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
+                password.Dispose();
+            }
+        }
+
         private static void SetTimesheetEntries(string jobsFileName)
         {
             int totalHours = 0;
@@ -70,20 +86,5 @@ namespace TimesheetTimothy
             SaveEntry();
         }
 
-        private static void OpenTimesheetPage(string username, SecureString password)
-        {
-            var securePasswordPtr = IntPtr.Zero;
-            try
-            {
-                securePasswordPtr = Marshal.SecureStringToGlobalAllocUnicode(password);
-                if (!OpenTimesheet(username, Marshal.PtrToStringUni(securePasswordPtr) ?? string.Empty))
-                    throw new Exception($"{Result(ExitCode.LoginDetailsIncorrect)}");
-            }
-            finally
-            {
-                Marshal.ZeroFreeGlobalAllocUnicode(securePasswordPtr);
-                password.Dispose();
-            }
-        }
     }
 }
