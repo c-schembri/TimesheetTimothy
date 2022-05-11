@@ -7,14 +7,18 @@ namespace TimesheetTimothy.CommandLine;
 internal static class TimothysCommands
 {
     const string jobsFileName = "jobs.json";
+    private static Command? commitCommand;
 
     public static Command Commit
     {
         get
         {
-            Command commitCommand = new("commit", "Commit the timesheet");
-            commitCommand.AddArgument(CommitArguments.Username);
-            commitCommand.SetHandler((string e) => DoYourTimesheet(e, jobsFileName), CommitArguments.Username);
+            if (commitCommand == null)
+            {
+                commitCommand = new("commit", "Commit the timesheet");
+                commitCommand.AddArgument(CommitArguments.Username);
+                commitCommand.SetHandler((string user) => DoYourTimesheet(user, jobsFileName), CommitArguments.Username);
+            }
 
             return commitCommand;
         }
