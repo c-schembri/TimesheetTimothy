@@ -4,12 +4,13 @@ namespace TimesheetTimothy.CommandLine;
 
 internal static class UserPrompts
 {
-    public static SecureString GetPassword(string username)
+    internal static SecureString GetPassword(string username)
     {
-        SecureString password = new();
         Console.WriteLine($"Please enter the password for {username}");
 
+        SecureString password = new();
         ConsoleKeyInfo key;
+        
         do
         {
             key = Console.ReadKey(true);
