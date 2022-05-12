@@ -1,12 +1,13 @@
-﻿using System.Text.RegularExpressions;
+﻿using OpenQA.Selenium;
+using System.Text.RegularExpressions;
 using static TimesheetTimothy.PageInteraction.SeleniumHelpers;
 using static SeleniumExtras.WaitHelpers.ExpectedConditions;
 
 namespace TimesheetTimothy.PageInteraction;
 
-public static class UI
+internal static class UI
 {
-    public static bool OpenTimesheet(string username, string password)
+    internal static bool OpenTimesheet(string username, string password)
     {
         SendKeys(By.Id("userNameInput"), username);
         SendKeys(By.Id("passwordInput"), password);
@@ -20,7 +21,7 @@ public static class UI
         return true;
     }
 
-    public static void SetJobCode(string jobCode)
+    internal static void SetJobCode(string jobCode)
     {
         SendKeys(By.Name("txtJobNum"), jobCode);
     }
@@ -34,7 +35,7 @@ public static class UI
         { "Friday",    4 }
     };
 
-    public static void SetDay(string day)
+    internal static void SetDay(string day)
     {
         Click(By.Name("cmbDay"));
 
@@ -43,12 +44,12 @@ public static class UI
         Click(options.ElementAt(dayNumberLookup[day]));
     }
 
-    public static void SetHours(string hours)
+    internal static void SetHours(string hours)
     {
         SendKeys(By.Name("txtHours"), hours);
     }
 
-    public static void SetWorkType(string? workType)
+    internal static void SetWorkType(string? workType)
     {
         SendKeys(By.Name("txtWorkType"), workType ?? string.Empty);
     }
@@ -58,7 +59,7 @@ public static class UI
         SendKeys(By.Name("txaComments"), comments ?? string.Empty);
     }
 
-    public static void SaveEntry()
+    internal static void SaveEntry()
     {
         Click(By.Name("Submit"));
 
@@ -71,7 +72,7 @@ public static class UI
         }
     }
 
-    public static int GetEnteredHours()
+    internal static int GetEnteredHours()
     {
         string enteredHours = FindElement(
             By.Name("ListEntries"),
@@ -81,7 +82,7 @@ public static class UI
     }
 
 #if RELEASE
-    public static void CommitTimesheet()
+    internal static void CommitTimesheet()
     {
         Click(By.CssSelector("[href='TSCommit.asp']"));
         Click(WaitUntil(ElementIsVisible(By.Name("btnContinue"))));
