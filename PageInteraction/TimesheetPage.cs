@@ -48,15 +48,15 @@ internal static class TimesheetPage
     private static void SetTimesheetEntries(string jobsFileName)
     {
         var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName)) ?? throw new NullReferenceException();
-        int totalHours = ProcessWeek(week);
+        ProcessWeek(week, out int totalHours);
         
         Trace.Assert(totalHours == GetEnteredHours(), 
             "Hours entered do not match the total hours of the timesheet - was there already entries for this week?");
     }
 
-    private static int ProcessWeek(Week week)
+    private static void ProcessWeek(Week week, out int totalHours)
     {
-        int totalHours = 0;
+        totalHours = 0;
         
         foreach (var dayProp in typeof(Week).GetProperties())
         {
@@ -74,8 +74,6 @@ internal static class TimesheetPage
                 totalHours += int.Parse(entry.Hours!);
             }
         }
-
-        return totalHours;
     }
 
     private static void SetJobEntry(MemberInfo dayProp, Entry entry)
