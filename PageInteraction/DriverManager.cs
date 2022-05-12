@@ -1,19 +1,21 @@
-﻿using WebDriverManager;
-using WebDriverManager.DriverConfigs;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using WebDriverManager.DriverConfigs.Impl;
-using static TimesheetTimothy.Program;
 
 namespace TimesheetTimothy.PageInteraction;
 
-static internal class DriverManager
+internal static class DriverManager
 {
-    public static void SetUpDriver(IDriverConfig driverConfig)
+    internal static IWebDriver Driver { get; }
+
+    static DriverManager()
     {
-        new WebDriverManager.DriverManager().SetUpDriver(driverConfig);
+        new WebDriverManager.DriverManager().SetUpDriver(new ChromeConfig());
+        Driver = new ChromeDriver();
         Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
     }
-
-    public static void TearDownDriver()
+    
+    internal static void TearDownDriver()
     {
         try
         { 
