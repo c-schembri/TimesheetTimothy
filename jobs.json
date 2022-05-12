@@ -1,0 +1,31 @@
+{
+	"Monday": {
+		"Entries": [
+			{ "JobCode": "ZZ11", "Hours": "8", "WorkType": "NOCHAR", "Comments": "co-ordination" }
+		]
+	},
+	
+	"Tuesday": {
+		"Entries": [	
+			{ "JobCode": "ZZ11", "Hours": "8", "WorkType": "NOCHAR", "Comments": "co-ordination" }
+		]
+	},
+	
+	"Wednesday": {
+		"Entries": [	
+			{ "JobCode": "ZZ11", "Hours": "8", "WorkType": "NOCHAR", "Comments": "co-ordination" }
+		]
+	},
+	
+	"Thursday": {
+		"Entries": [	
+			{ "JobCode": "ZZ11", "Hours": "8", "WorkType": "NOCHAR", "Comments": "co-ordination" }
+		]
+	},
+	
+	"Friday": {
+		"Entries": [	
+			{ "JobCode": "ZZ11", "Hours": "8", "WorkType": "NOCHAR", "Comments": "co-ordination" }
+		]
+	}
+}

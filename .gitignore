@@ -396,3 +396,4 @@ FodyWeavers.xsd
 .idea/*
 /jobs.txt
 /Properties/launchSettings.json
+/.vscode

@@ -1,6 +1,8 @@
 # Timesheet Timothy
 
-Timothy requires a `jobs.txt` file to read from. This file is essentially the input data for the timesheet system. By default, Timothy looks in the current directory for the jobs file.
+## Example: `TimesheetTimothy.exe commit user@email.com`
+
+Timothy requires a `jobs.json` file to read from. This file is essentially the input data for the timesheet system. By default, Timothy looks in the current directory for the jobs file.
 The structure of this file is as follows:
 
 ```
