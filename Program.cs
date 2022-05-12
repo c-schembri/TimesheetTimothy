@@ -1,29 +1,25 @@
-﻿using OpenQA.Selenium.Chrome;
-using System.CommandLine;
+﻿using System.CommandLine;
 using TimesheetTimothy.CommandLine;
+using TimesheetTimothy.PageInteraction;
 
 namespace TimesheetTimothy;
 
 public static class Program
 {
-    public static IWebDriver Driver { get; } = new ChromeDriver();
-
     /// The main entry point for the program.
     public static int Main(string[] args)
     {
-        var cmd = new RootCommand
+        RootCommand cmd = new()
         {
-            TimothysCommands.Commit       
+            Commands.Commit
         };
 
-        try
-        {
-            var result = cmd.Invoke(args);
-            return result;
-        }
-        finally
-        {
-            PageInteraction.DriverManager.TearDownDriver();
-        }
+        int result = cmd.Invoke(args);
+        
+        // Only attempt driver tear-down if a valid command was passed to the program.
+        if (result == 0)
+            DriverManager.TearDownDriver();
+        
+        return result;
     }
 }
