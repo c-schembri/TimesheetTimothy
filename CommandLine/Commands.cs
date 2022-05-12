@@ -9,7 +9,7 @@ internal static class Commands
 
     static Commands()
     {
-        Commit = new Command("--commit", "Commit the timesheet");
+        Commit = new Command("commit", "Commit the timesheet");
         Commit.AddArgument(CommitArguments.Username);
         Commit.SetHandler((string user) => DoYourTimesheet(user, "jobs.json"), CommitArguments.Username);
     }
