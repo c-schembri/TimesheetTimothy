@@ -15,6 +15,8 @@ internal static class TimesheetPage
 {
     internal static void DoYourTimesheet(string username, string jobsFileName)
     {
+        EnsureJobFileExists();
+        
         SecureString password = GetPassword(username);
         var stopwatch = Stopwatch.StartNew();
 
@@ -27,6 +29,13 @@ internal static class TimesheetPage
 
         stopwatch.Stop();
         Console.WriteLine($"{GetResultMsg(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString())}");
+    }
+
+    private static void EnsureJobFileExists()
+    {
+        // TODO(Curtis): move this "jobs.json" identifier into possibly a CLI provided argument
+        if (!File.Exists("jobs.json"))
+            throw new FileNotFoundException(GetResultMsg(ExitCode.JobsFileNotFound));
     }
 
     private static void OpenTimesheetPage(string username, SecureString password)
@@ -66,7 +75,7 @@ internal static class TimesheetPage
 
             // However, if a day _is_ defined, then the program expects some entries in that day.
             if (day.Entries is null)
-                throw new Exception($"{GetResultMsg(ExitCode.DayMissingEntries, dayProp.Name)}");
+                throw new JsonException($"{GetResultMsg(ExitCode.DayMissingEntries, dayProp.Name)}");
 
             foreach (var entry in day.Entries)
             {
