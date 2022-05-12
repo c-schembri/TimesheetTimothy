@@ -1,17 +1,15 @@
 ﻿namespace TimesheetTimothy;
 
-public static class GlobalConstants
+internal static class GlobalConstants
 {
-    public const string EmptyString = "";
+    internal const string EmptyString = "";
 }
 
-public static class GlobalGuards
+internal static class GlobalGuards
 {
-    public static void EnsureLengthNotZero(Array array, string paramName)
+    internal static void ThrowArgumentExceptionIfLengthZero(Array array, string paramName)
     {
         if (array.Length == 0)
-        {
             throw new ArgumentException("Length cannot be 0", paramName);
-        }
     }
 }
