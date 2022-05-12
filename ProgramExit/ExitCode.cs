@@ -1,6 +1,6 @@
 ﻿namespace TimesheetTimothy.ProgramExit;
 
-public enum ExitCode
+internal enum ExitCode
 {
     TimesheetCommitted,
     InvalidArgumentCount,
