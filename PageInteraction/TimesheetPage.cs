@@ -71,7 +71,7 @@ internal static class TimesheetPage
             foreach (var entry in day.Entries)
             {
                 SetJobEntry(dayProp, entry);
-                totalHours += int.Parse(entry.Hours!);
+                totalHours += int.Parse(entry.Hours!); // `SetJobEntry` ensures `entry.Hours` is not null. 
             }
         }
     }
