@@ -1,42 +1,41 @@
-﻿using OpenQA.Selenium.Support.UI;
-using static TimesheetTimothy.Program;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using static TimesheetTimothy.PageInteraction.DriverManager;
 using static SeleniumExtras.WaitHelpers.ExpectedConditions;
-using WebDriverManager.DriverConfigs.Impl;
-using WebDriverManager;
 
 namespace TimesheetTimothy.PageInteraction;
 
-public static class SeleniumHelpers
+internal static class SeleniumHelpers
 {
-    public static void SendKeys(By selector, string input)
+    internal static void SendKeys(By selector, string input)
     {
         Driver.FindElement(selector).SendKeys(input);
     }
 
-    public static void Click(By selector)
+    internal static void Click(By selector)
     {
         Driver.FindElement(selector).Click();
     }
 
-    public static void Click(IWebElement element)
+    internal static void Click(IWebElement element)
     {
         element.Click();
     }
 
-    public static IWebElement WaitUntil(Func<IWebDriver, IWebElement> cond)
+    internal static IWebElement WaitUntil(Func<IWebDriver, IWebElement> cond)
     {
         return InternalWaitUntil(cond);
     }
 
-    public static IEnumerable<IWebElement> WaitUntil(Func<IWebDriver, IWebElement> cond, By selector)
+    internal static IEnumerable<IWebElement> WaitUntil(Func<IWebDriver, IWebElement> cond, By selector)
     {
         InternalWaitUntil(cond);
         return Driver.FindElements(selector);
     }
 
-    public static IWebElement FindElement(params By[] selectors)
+    internal static IWebElement FindElement(params By[] selectors)
     {
-        EnsureLengthNotZero(selectors, nameof(selectors));
+        ThrowArgumentExceptionIfLengthZero(selectors, nameof(selectors));
 
         var latestFind = Driver.FindElement(selectors[0]);
         for (int i = 1; i < selectors.Length; i++)
@@ -47,7 +46,7 @@ public static class SeleniumHelpers
         return latestFind;
     }
 
-    public static bool ElementVisible(By selector)
+    internal static bool ElementVisible(By selector)
     {
         try
         {
