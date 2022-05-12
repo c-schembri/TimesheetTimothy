@@ -9,17 +9,18 @@ public static class Program
     /// The main entry point for the program.
     public static int Main(string[] args)
     {
-        RootCommand cmd = new()
+        try
         {
-            Commands.Commit
-        };
+            RootCommand cmd = new()
+            {
+                Commands.Commit
+            };
 
-        int result = cmd.Invoke(args);
-        
-        // Only attempt driver tear-down if a valid command was passed to the program.
-        if (result == 0)
+            return cmd.Invoke(args);
+        }
+        finally
+        {
             DriverManager.TearDownDriver();
-        
-        return result;
+        }
     }
 }

@@ -6,17 +6,27 @@ namespace TimesheetTimothy.PageInteraction;
 
 internal static class DriverManager
 {
-    internal static IWebDriver Driver { get; }
-
-    static DriverManager()
+    internal static IWebDriver Driver
     {
-        new WebDriverManager.DriverManager().SetUpDriver(new ChromeConfig());
-        Driver = new ChromeDriver();
-        Driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
+        get
+        {
+            if (_driver is null)
+            {
+                new WebDriverManager.DriverManager().SetUpDriver(new ChromeConfig());
+                _driver = new ChromeDriver();
+                _driver.Navigate().GoToUrl("https://timesheets.dialoggroup.biz/?company=accesstesting");
+            }
+
+            return _driver;
+        }
     }
-    
+    private static IWebDriver? _driver;
+
     internal static void TearDownDriver()
     {
+        if (_driver is null)
+            return;
+        
         try
         { 
             Driver.Quit();
