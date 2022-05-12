@@ -1,25 +1,23 @@
 ﻿using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.Json;
 using TimesheetTimothy.ProgramExit;
+using TimesheetTimothy.DataStructures;
 using static TimesheetTimothy.ProgramExit.ExitMessages;
-using static TimesheetTimothy.PageInteraction.DriverManager;
 using static TimesheetTimothy.PageInteraction.UI;
 using static TimesheetTimothy.CommandLine.UserPrompts;
-using TimesheetTimothy.DataStructures;
-using WebDriverManager.DriverConfigs.Impl;
 
 namespace TimesheetTimothy.PageInteraction;
 
 internal static class TimesheetPage
 {
-    internal static int DoYourTimesheet(string username, string jobsFileName)
+    internal static void DoYourTimesheet(string username, string jobsFileName)
     {
         SecureString password = GetPassword(username);
         var stopwatch = Stopwatch.StartNew();
 
-        SetUpDriver(new ChromeConfig()); // TODO: Factory pattern to return different configs
         OpenTimesheetPage(username, password);
         SetTimesheetEntries(jobsFileName);
 
@@ -29,7 +27,6 @@ internal static class TimesheetPage
 
         stopwatch.Stop();
         Console.WriteLine($"{GetResultMsg(ExitCode.TimesheetCommitted, stopwatch.ElapsedMilliseconds.ToString())}");
-        return 0;
     }
 
     private static void OpenTimesheetPage(string username, SecureString password)
@@ -50,15 +47,17 @@ internal static class TimesheetPage
 
     private static void SetTimesheetEntries(string jobsFileName)
     {
-        int totalHours = 0;
         var week = JsonSerializer.Deserialize<Week>(File.ReadAllText(jobsFileName)) ?? throw new NullReferenceException();
-        ProcessWeek(week, ref totalHours);
+        int totalHours = ProcessWeek(week);
+        
         Trace.Assert(totalHours == GetEnteredHours(), 
             "Hours entered do not match the total hours of the timesheet - was there already entries for this week?");
     }
 
-    private static void ProcessWeek(Week week, ref int totalHours)
+    private static int ProcessWeek(Week week)
     {
+        int totalHours = 0;
+        
         foreach (var dayProp in typeof(Week).GetProperties())
         {
             // Not all days need to be defined by the user.
@@ -75,9 +74,11 @@ internal static class TimesheetPage
                 totalHours += int.Parse(entry.Hours!);
             }
         }
+
+        return totalHours;
     }
 
-    private static void SetJobEntry(System.Reflection.PropertyInfo dayProp, Entry entry)
+    private static void SetJobEntry(MemberInfo dayProp, Entry entry)
     {
         ArgumentNullException.ThrowIfNull(entry.JobCode, "JobCode");
         ArgumentNullException.ThrowIfNull(entry.Hours, "Hours");
@@ -89,5 +90,4 @@ internal static class TimesheetPage
         SetComments(entry.Comments);
         SaveEntry();
     }
-
 }
